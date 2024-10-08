@@ -7,10 +7,13 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private Animator animator;
     [SerializeField] private bool estaVivo = true;
+    [SerializeField] private int ouro;
+    [SerializeField] private int vida;
     [SerializeField] private int forcaPulo;
     [SerializeField] private float velocidade;
     [SerializeField] private bool temChave;
     [SerializeField] private bool pegando;
+    [SerializeField] private bool podePegar;
     private Rigidbody rb;
     private bool estaPulando;
     private Vector3 angleRotation;
@@ -21,6 +24,7 @@ public class Player : MonoBehaviour
     {
         temChave = false;
         pegando = false;
+        podePegar = false;
         angleRotation = new Vector3(0, 90, 0);
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
@@ -29,8 +33,13 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         TurnAround();
+
+        if (Input.GetKeyDown(KeyCode.E) && podePegar)
+        {
+            animator.SetTrigger("Pegando");
+            pegando = true;
+        }
 
         //Andar
         if (Input.GetKey(KeyCode.W))
@@ -69,12 +78,6 @@ public class Player : MonoBehaviour
             Jump();
         }
 
-        if(Input.GetKeyDown(KeyCode.E))
-        {
-            animator.SetTrigger("Pegando");
-            pegando = true;
-        }
-
         if (Input.GetMouseButtonDown(0))
         {
             animator.SetTrigger("Ataque");
@@ -96,11 +99,6 @@ public class Player : MonoBehaviour
             animator.SetTrigger("EstaVivo");
             estaVivo = true;
         }
-    }
-
-    void FixedUpdate()
-    {
-        
     }
 
     private void Walk(float velo = 1)
@@ -138,16 +136,23 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        podePegar = true;
+    }
+
     private void OnTriggerStay(Collider other)
     {
         Debug.Log(other.gameObject.tag);
-
+      
         if(other.gameObject.CompareTag("Chave") && pegando)
         {
             temChave = true;
             Destroy(other.gameObject);
+            podePegar = false;
+            pegando = false;
         }
-
+        
         if(other.gameObject.CompareTag("Porta") && pegando && temChave)
         {
             other.gameObject.GetComponent<Animator>().SetTrigger("Abrir");
@@ -157,6 +162,7 @@ public class Player : MonoBehaviour
         if (other.gameObject.CompareTag("Bau") && pegando && temChave)
         {
             other.gameObject.GetComponent<Animator>().SetTrigger("Abrir");
+            ouro = other.gameObject.GetComponent<Bau>().PegarOuro();
             temChave = true;
         }
     }
@@ -164,5 +170,6 @@ public class Player : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         pegando = false;
+        podePegar = false;
     }
 }
