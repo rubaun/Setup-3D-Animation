@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 
@@ -14,6 +16,7 @@ public class Player : MonoBehaviour
     [SerializeField] private bool temChave;
     [SerializeField] private bool pegando;
     [SerializeField] private bool podePegar;
+    [SerializeField] private List<GameObject> inventario = new List<GameObject>();
     private Rigidbody rb;
     private bool estaPulando;
     private Vector3 angleRotation;
@@ -147,7 +150,9 @@ public class Player : MonoBehaviour
       
         if(other.gameObject.CompareTag("Chave") && pegando)
         {
-            temChave = true;
+            inventario.Add(Instantiate(other.gameObject.GetComponent<Chave>().CopiaDaChave()));
+            int numero = other.gameObject.GetComponent<Chave>().PegarNumeroChave();
+            Debug.LogFormat($"Chave número: {numero} foi inserida no inventário");
             Destroy(other.gameObject);
             podePegar = false;
             pegando = false;
@@ -159,11 +164,17 @@ public class Player : MonoBehaviour
             temChave = false;
         }
 
-        if (other.gameObject.CompareTag("Bau") && pegando && temChave)
+        if (other.gameObject.CompareTag("Bau") && pegando)
         {
-            other.gameObject.GetComponent<Animator>().SetTrigger("Abrir");
-            ouro = other.gameObject.GetComponent<Bau>().PegarOuro();
-            temChave = true;
+            if(VerificaChave(other.gameObject.GetComponent<Bau>().PegarNumeroFechadura()))
+            {
+                other.gameObject.GetComponent<Animator>().SetTrigger("Abrir");
+                PegarConteudoBau(other.gameObject);
+            }
+            else
+            {
+                Debug.Log("Você não tem a chave.");
+            }
         }
     }
 
@@ -172,4 +183,51 @@ public class Player : MonoBehaviour
         pegando = false;
         podePegar = false;
     }
+
+    private bool VerificaChave(int chave)
+    {
+        foreach (GameObject item in inventario)
+        {
+            if (item.gameObject.CompareTag("Chave"))
+            {
+                if (item.gameObject.GetComponent<Chave>().PegarNumeroChave() == chave)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private void PegarConteudoBau(GameObject bau)
+    {
+        Bau bauTesouro = bau.GetComponent<Bau>();
+
+        ouro += bauTesouro.PegarOuro();
+
+        if (bauTesouro.AcessarConteudoBau() != null)
+        {
+            foreach (GameObject item in bauTesouro.AcessarConteudoBau())
+            {
+                inventario.Add(item);
+            }
+
+            bauTesouro.RemoverConteudoBau();
+        }
+
+        foreach (GameObject item in inventario)
+        {
+            if (item.gameObject.CompareTag("Chave"))
+            {
+                if (item.gameObject.GetComponent<Chave>().PegarNumeroChave() 
+                    == bauTesouro.PegarNumeroFechadura())
+                {
+                    Destroy(item.gameObject);
+                    inventario.Remove(item);
+                }
+            }
+        }
+    }
+
 }

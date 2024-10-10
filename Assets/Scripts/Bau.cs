@@ -9,6 +9,7 @@ public class Bau : MonoBehaviour
     [SerializeField] private int numeroChave;
     [SerializeField] private List<GameObject> itens = new List<GameObject>();
     [SerializeField] private int ouro;
+    private bool pegouOuro = false;
 
     void Start()
     {
@@ -31,14 +32,35 @@ public class Bau : MonoBehaviour
 
     public int PegarOuro()
     {
-        DesativarParticulas();
-        StartCoroutine(ZerarBau());
-        return ouro;
+        if (!pegouOuro)
+        {
+            DesativarParticulas();
+            StartCoroutine(ZerarBau());
+            pegouOuro = true;
+            return ouro;
+        }
+
+        return 0;
     }
 
     IEnumerator ZerarBau()
     {
         yield return new WaitForSeconds(2.5f);
         ouro = 0;
+    }
+
+    public int PegarNumeroFechadura()
+    {
+        return numeroChave;
+    }
+
+    public List<GameObject> AcessarConteudoBau()
+    { 
+        return itens; 
+    }
+
+    public void RemoverConteudoBau()
+    { 
+        itens.Clear(); 
     }
 }
