@@ -8,6 +8,9 @@ TagManager:
   - Chave
   - Porta
   - Bau
+  - Avisos
+  - Inventario
+  - Ouro
   layers:
   - Default
   - TransparentFX

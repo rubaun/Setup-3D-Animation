@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
@@ -20,22 +21,30 @@ public class Player : MonoBehaviour
     private Rigidbody rb;
     private bool estaPulando;
     private Vector3 angleRotation;
-    
+    private TextMeshProUGUI avisos;
+    private TextMeshProUGUI textoOuro;
+    private List<string> listaAvisos = new List<string>();
+
 
     // Start is called before the first frame update
     void Start()
     {
+        ouro = 0;
         temChave = false;
         pegando = false;
         podePegar = false;
         angleRotation = new Vector3(0, 90, 0);
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
+        avisos = GameObject.Find("Avisos").GetComponent<TextMeshProUGUI>();
+        textoOuro = GameObject.FindGameObjectWithTag("Ouro").GetComponent<TextMeshProUGUI>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        textoOuro.text = ouro.ToString();
+
         TurnAround();
 
         if (Input.GetKeyDown(KeyCode.E) && podePegar)
@@ -142,6 +151,7 @@ public class Player : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         podePegar = true;
+        ListarAvisos("Pressione E");
     }
 
     private void OnTriggerStay(Collider other)
@@ -152,6 +162,7 @@ public class Player : MonoBehaviour
         {
             inventario.Add(Instantiate(other.gameObject.GetComponent<Chave>().CopiaDaChave()));
             int numero = other.gameObject.GetComponent<Chave>().PegarNumeroChave();
+            ListarAvisos("Nova chave!");
             Debug.LogFormat($"Chave número: {numero} foi inserida no inventário");
             Destroy(other.gameObject);
             podePegar = false;
@@ -161,7 +172,6 @@ public class Player : MonoBehaviour
         if(other.gameObject.CompareTag("Porta") && pegando && temChave)
         {
             other.gameObject.GetComponent<Animator>().SetTrigger("Abrir");
-            temChave = false;
         }
 
         if (other.gameObject.CompareTag("Bau") && pegando)
@@ -170,10 +180,8 @@ public class Player : MonoBehaviour
             {
                 other.gameObject.GetComponent<Animator>().SetTrigger("Abrir");
                 PegarConteudoBau(other.gameObject);
-            }
-            else
-            {
-                Debug.Log("Você não tem a chave.");
+                podePegar = false;
+                pegando = false;
             }
         }
     }
@@ -204,15 +212,16 @@ public class Player : MonoBehaviour
     {
         Bau bauTesouro = bau.GetComponent<Bau>();
 
-        ouro += bauTesouro.PegarOuro();
+        ListarAvisos($"+{ouro += bauTesouro.PegarOuro()} de ouro");        
 
         if (bauTesouro.AcessarConteudoBau() != null)
         {
             foreach (GameObject item in bauTesouro.AcessarConteudoBau())
             {
                 inventario.Add(item);
+                
             }
-
+            ListarAvisos("Novos itens!");
             bauTesouro.RemoverConteudoBau();
         }
 
@@ -225,9 +234,35 @@ public class Player : MonoBehaviour
                 {
                     Destroy(item.gameObject);
                     inventario.Remove(item);
+                    ListarAvisos("Chave Utilizada!");
                 }
             }
         }
+    }
+
+    private void ListarAvisos(string aviso)
+    {
+        listaAvisos.Add(aviso);
+        StopAllCoroutines();
+        StartCoroutine("MostrarAviso");    
+        
+    }
+
+    IEnumerator MostrarAviso()
+    {
+        
+        foreach (string texto in listaAvisos)
+        {
+            avisos.text = texto;
+            GameObject.Find("Avisos").GetComponent<Animator>().SetTrigger("Aviso");
+            yield return new WaitForSeconds(2.5f);
+            GameObject.Find("Avisos").GetComponent<Animator>().SetTrigger("Aviso");
+            yield return new WaitForSeconds(0.5f);
+        }   
+
+        listaAvisos.Clear();
+        //StopCoroutine("MostrarAviso");
+
     }
 
 }
