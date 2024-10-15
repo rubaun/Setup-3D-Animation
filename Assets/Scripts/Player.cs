@@ -219,7 +219,6 @@ public class Player : MonoBehaviour
             foreach (GameObject item in bauTesouro.AcessarConteudoBau())
             {
                 inventario.Add(item);
-                
             }
             ListarAvisos("Novos itens!");
             bauTesouro.RemoverConteudoBau();
@@ -239,6 +238,7 @@ public class Player : MonoBehaviour
             }
         }
     }
+
 
     private void ListarAvisos(string aviso)
     {
