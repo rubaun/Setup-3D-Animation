@@ -3,26 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Arma", menuName = "Novo Item/ Arma")]
-public class Arma : ScriptableObject
+public class Arma : Item
 {
-    public string nome;
-    public string descricao;
-    public Sprite sprite;
+    
     public bool ehMagica;
     public int dano;
     public int danoAdicional;
 
-    public string Nome()
+    public override string Nome()
     {
         return nome;
     }
 
-    public string Descricao()
+    public override string Descricao()
     {
         return descricao;
     }
 
-    public Sprite Sprite()
+    public override Sprite Sprite()
     {
         return sprite;
     }

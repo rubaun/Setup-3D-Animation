@@ -5,23 +5,21 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Escudo", menuName = "Novo Item/ Escudo")]
 public class Escudo : Item
 {
-    public string nome;
-    public string descricao;
-    public Sprite sprite;
+    
     public bool ehMagica;
     public int defesa;
 
-    public string Nome()
+    public override string Nome()
     {
         return nome;
     }
 
-    public string Descricao()
+    public override string Descricao()
     {
         return descricao;
     }
 
-    public Sprite Sprite()
+    public override Sprite Sprite()
     {
         return sprite;
     }

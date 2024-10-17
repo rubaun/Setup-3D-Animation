@@ -5,20 +5,18 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Chave", menuName = "Novo Item/ Chave")]
 public class Chave : Item
 {
-    public string nome;
-    public string descricao;
-    public Sprite sprite;
+    
     public int numeroChave;
 
-    public string NomeDaChave()
+    public override string Nome()
     {
         return nome;
     }
-    public string DescricaoDaChave()
+    public override string Descricao()
     {
         return descricao;
     }
-    public Sprite Sprite()
+    public override Sprite Sprite()
     {
         return sprite;
     }

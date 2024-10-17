@@ -7,8 +7,10 @@ public class Bau : MonoBehaviour
     [SerializeField] GameObject particulas;
     [SerializeField] private bool ehMagico;
     [SerializeField] private int numeroChave;
-    [SerializeField] private List<GameObject> itens = new List<GameObject>();
+    [SerializeField] private List<Item> itens = new List<Item>();
+    [SerializeField] private List<GameObject> itensInstanciados = new List<GameObject>();
     [SerializeField] private int ouro;
+    [SerializeField] private GameObject instancia;
     private bool pegouOuro = false;
 
     void Start()
@@ -46,6 +48,7 @@ public class Bau : MonoBehaviour
     IEnumerator ZerarBau()
     {
         yield return new WaitForSeconds(2.5f);
+        itensInstanciados.Clear();
         ouro = 0;
     }
 
@@ -54,10 +57,14 @@ public class Bau : MonoBehaviour
         return numeroChave;
     }
 
-    public List<GameObject> AcessarConteudoBau()
-    { 
-        return itens; 
+    public void AcessarConteudoBau()
+    {
+        foreach (var item in itensInstanciados)
+        {
+            Instantiate(item, instancia.transform.position, instancia.transform.rotation);
+        }
     }
+
 
     public void RemoverConteudoBau()
     { 

@@ -73,7 +73,7 @@ public class ItemDisplay : MonoBehaviour
         gameObject.name = nome;
         descricao = pocao.descricao;
         sprite.sprite = pocao.Sprite();
-        tipo = pocao.TipoPocao();
+        tipo = pocao.TipoDePocao();
         tamanho = pocao.Tamanho();
         textoDescricao.text = nome;
     }

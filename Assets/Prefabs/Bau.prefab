@@ -4830,6 +4830,37 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!1 &1256652200313870418
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4845879536331121364}
+  m_Layer: 0
+  m_Name: Instancia
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4845879536331121364
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1256652200313870418}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: -0.05, y: 2.49, z: 2.32}
+  m_LocalScale: {x: 0.99999976, y: 1, z: 0.99999976}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5583721801656097133}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &5402037071645621894
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4890,13 +4921,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -7756064716777025972, guid: e8e4ad971e05fd64d84e24e8602e1d08,
         type: 3}
+      propertyPath: m_Name
+      value: TampaBau
+      objectReference: {fileID: 0}
+    - target: {fileID: -7756064716777025972, guid: e8e4ad971e05fd64d84e24e8602e1d08,
+        type: 3}
       propertyPath: m_TagString
       value: Bau
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: e8e4ad971e05fd64d84e24e8602e1d08,
         type: 3}
       propertyPath: m_Name
-      value: chest
+      value: Bau
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4905,6 +4941,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 3785509595154966008}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: e8e4ad971e05fd64d84e24e8602e1d08,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4845879536331121364}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e8e4ad971e05fd64d84e24e8602e1d08,
         type: 3}
@@ -4918,6 +4958,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1290420577406173467}
+    - targetCorrespondingSourceObject: {fileID: -7756064716777025972, guid: e8e4ad971e05fd64d84e24e8602e1d08,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4204283075633509323}
   m_SourcePrefab: {fileID: 100100000, guid: e8e4ad971e05fd64d84e24e8602e1d08, type: 3}
 --- !u!1 &5059387128155243479 stripped
 GameObject:
@@ -5001,3 +5045,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.7000004, y: 0.9650022, z: 1.9449209}
   m_Center: {x: 2.3114945e-15, y: 0.31749916, z: 0.8373428}
+--- !u!114 &4204283075633509323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6821555009876734154}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 219ebd4a47cd4cc4bb5b78f8760b51e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  particulas: {fileID: 705518184039957400}
+  ehMagico: 0
+  numeroChave: 0
+  itens: []
+  itensInstanciados: []
+  ouro: 0
+  instancia: {fileID: 1256652200313870418}
