@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Escudo", menuName = "Novo Item/ Escudo")]
-public class Escudo : ScriptableObject
+public class Escudo : Item
 {
     public string nome;
     public string descricao;

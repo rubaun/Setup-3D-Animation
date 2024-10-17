@@ -160,7 +160,7 @@ public class Player : MonoBehaviour
       
         if(other.gameObject.CompareTag("Chave") && pegando)
         {
-            inventario.Add(Instantiate(other.gameObject.GetComponent<Chave>().CopiaDaChave()));
+            //inventario.Add(Instantiate(other.gameObject.GetComponent<Chave>().CopiaDaChave()));
             int numero = other.gameObject.GetComponent<Chave>().PegarNumeroChave();
             ListarAvisos("Nova chave!");
             Debug.LogFormat($"Chave número: {numero} foi inserida no inventário");
