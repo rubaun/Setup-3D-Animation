@@ -213,9 +213,6 @@ public class Player : MonoBehaviour
         
         ListarAvisos("Novos itens!");
         
-        bauTesouro.RemoverConteudoBau();
-        
-
         foreach (Item item in inventario.Itens)
         {
             if (item is Chave chave) //Cast

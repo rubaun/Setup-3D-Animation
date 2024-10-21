@@ -15,8 +15,7 @@ MonoBehaviour:
   nome: "Po\xE7\xE3o de Cura Pequena"
   descricao: "L\xEDquido viscoso vermelho que restaura a sa\xFAde."
   sprite: {fileID: 21300000, guid: e8560519c99bf3c4ca51e75d3ae70dda, type: 3}
-  tipoCura: 1
-  tipoMagia: 0
-  tipoDefesa: 0
-  tipoPoder: 0
-  tamanho: 100
+  itemPrefab: {fileID: 2650088978508735779, guid: 9c2fc5e2c22b5f4428e9ce7db3cdfb2a,
+    type: 3}
+  tipo: 0
+  tamanho: 25

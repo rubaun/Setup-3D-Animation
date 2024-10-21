@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42e1dfa1b135ce54dba2fbf05c587b8f, type: 3}
-  m_Name: ChaveBau
+  m_Name: ChavePortaComum
   m_EditorClassIdentifier: 
-  nome: "Chave de Ba\xFA"
-  descricao: Chave de metal
-  sprite: {fileID: 21300000, guid: f04fa6796deb91a41b807539aab0c141, type: 3}
-  itemPrefab: {fileID: 2329889435281519883, guid: 8d6cfe34998c40148a2568d6caddc273,
+  nome: Chave de Porta
+  descricao: Chave de metal para abir uma porta comum.
+  sprite: {fileID: 21300000, guid: 7124eaba463c10945a5d973c859b5b0d, type: 3}
+  itemPrefab: {fileID: 17585291417481089, guid: cc5ed174c407f2d469bfb23ae4dc1978,
     type: 3}
-  numeroChave: 2
+  numeroChave: 4

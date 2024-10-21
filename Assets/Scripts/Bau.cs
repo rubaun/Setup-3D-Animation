@@ -7,7 +7,6 @@ public class Bau : MonoBehaviour
     [SerializeField] GameObject particulas;
     [SerializeField] private bool ehMagico;
     [SerializeField] private int numeroChave;
-    [SerializeField] private List<Item> itens = new List<Item>();
     [SerializeField] private List<GameObject> itensInstanciados = new List<GameObject>();
     [SerializeField] private int ouro;
     [SerializeField] private GameObject instancia;
@@ -66,8 +65,4 @@ public class Bau : MonoBehaviour
     }
 
 
-    public void RemoverConteudoBau()
-    { 
-        itens.Clear(); 
-    }
 }

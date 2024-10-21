@@ -7,7 +7,7 @@ public class Item : ScriptableObject
     public string nome;
     public string descricao;
     public Sprite sprite;
-    public bool excluir;
+    public GameObject itemPrefab;
 
     public virtual string Nome()
     {
@@ -22,6 +22,11 @@ public class Item : ScriptableObject
     public virtual Sprite Sprite()
     {
         return sprite;
+    }
+
+    public virtual GameObject ItemPrefab()
+    {
+        return itemPrefab;
     }
 
 }
