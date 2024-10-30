@@ -10,11 +10,15 @@ public class Bau : MonoBehaviour
     [SerializeField] private List<GameObject> itensInstanciados = new List<GameObject>();
     [SerializeField] private int ouro;
     [SerializeField] private GameObject instancia;
+    [SerializeField] private bool aberto;
     private bool pegouOuro = false;
+    private Animator anima;
 
     void Start()
     {
-        if (ehMagico)
+        anima = GetComponent<Animator>();
+
+        if(ehMagico)
         {
             particulas.SetActive(true);
             ouro = Random.Range(100, 500);
@@ -23,6 +27,11 @@ public class Bau : MonoBehaviour
         {
             particulas.SetActive(false);
             ouro = Random.Range(0, 100);
+        }
+
+        if(aberto)
+        {
+            anima.SetTrigger("Abrir");
         }
     }
 
@@ -33,6 +42,8 @@ public class Bau : MonoBehaviour
 
     public int PegarOuro()
     {
+        anima.SetTrigger("Abrir");
+
         if (!pegouOuro)
         {
             DesativarParticulas();
@@ -64,5 +75,9 @@ public class Bau : MonoBehaviour
         }
     }
 
+    public bool Aberto()
+    {
+        return aberto;
+    }
 
 }

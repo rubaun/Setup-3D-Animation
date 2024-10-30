@@ -2,113 +2,120 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] private Animator animator;
+    
     [SerializeField] private bool estaVivo = true;
     [SerializeField] private int ouro;
     [SerializeField] private int vida;
     [SerializeField] private int forcaPulo;
     [SerializeField] private float velocidade;
-    [SerializeField] private bool temChave;
-    [SerializeField] private bool pegando;
-    [SerializeField] private bool podePegar;
     [SerializeField] private InventoryManager inventario;
+    private bool pegando;
+    private bool podePegar;
+    private bool podeAtacar;
     private Rigidbody rb;
     private bool estaPulando;
     private Vector3 angleRotation;
-    private TextMeshProUGUI avisos;
-    private TextMeshProUGUI textoOuro;
-    private List<string> listaAvisos = new List<string>();
+    private AnimaPlayer anima;
+    private AvisosPlayer avisos;
 
 
     // Start is called before the first frame update
     void Start()
     {
         ouro = 0;
-        temChave = false;
         pegando = false;
         podePegar = false;
         angleRotation = new Vector3(0, 90, 0);
-        animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();
-        avisos = GameObject.Find("Avisos").GetComponent<TextMeshProUGUI>();
-        textoOuro = GameObject.FindGameObjectWithTag("Ouro").GetComponent<TextMeshProUGUI>();
+        avisos = GetComponent<AvisosPlayer>();
         inventario = GameObject.FindObjectOfType<InventoryManager>();
+        anima = GetComponent<AnimaPlayer>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        textoOuro.text = ouro.ToString();
+        avisos.InformaOuroPlayer(ouro);
 
         TurnAround();
 
         if (Input.GetKeyDown(KeyCode.E) && podePegar)
         {
-            animator.SetTrigger("Pegando");
+            anima.PegarAnima();
             pegando = true;
         }
 
         //Andar
         if (Input.GetKey(KeyCode.W))
         {
-            animator.SetBool("Andar", true);
-            animator.SetBool("AndarPraTras", false);
+            anima.AndarFrenteAnima();
             Walk();
         }
         else if (Input.GetKey(KeyCode.S))
         {
-            animator.SetBool("AndarPraTras", true);
-            animator.SetBool("Andar", false);
+            anima.AndarTrasAnima();
             Walk();
         }
         else if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
         {
-            animator.SetBool("Andar", true);
+            anima.AndarAnima();
         }
         else
         {
-            animator.SetBool("Andar", false);
-            animator.SetBool("AndarPraTras", false);
+            anima.PararAnima();
         }
 
         //Evitar o bug da movimentação
         if (Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.S))
         {
-            animator.SetBool("Andar", false);
-            animator.SetBool("AndarPraTras", false);
+            anima.PararAnima();
         }
 
         //Pulo
         if (Input.GetKeyDown(KeyCode.Space) && !estaPulando)
         {
-            animator.SetTrigger("Pular");
+            anima.PularAnima();
             Jump();
         }
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && podeAtacar)
         {
-            animator.SetTrigger("Ataque");
+            anima.AtacarAnima();
+            Atacar();
         }
 
         //Correr
         if (Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.LeftShift))
         {
-            animator.SetBool("Correndo", true);
-            Walk(8);
+            anima.CorrerAnima();
+            Walk(6.5f);
         }
         else
         {
-            animator.SetBool("Correndo", false);
+            anima.PararCorrerAnima();
         }
 
         if (!estaVivo)
         {
-            animator.SetTrigger("EstaVivo");
+            anima.MorrerAnima();
             estaVivo = true;
+        }
+    }
+
+    private void Atacar()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, transform.forward, out hit, 2))
+        {
+            if (hit.transform.CompareTag("Inimigo"))
+            {
+                hit.transform.GetComponent<Inimigo>().TomarDano(10);
+            }
         }
     }
 
@@ -128,7 +135,6 @@ public class Player : MonoBehaviour
     {
         rb.AddForce(Vector3.up * forcaPulo, ForceMode.Impulse);
         estaPulando = true;
-        animator.SetBool("EstaNoChao", false);
     }
 
     private void TurnAround()
@@ -143,14 +149,14 @@ public class Player : MonoBehaviour
         if(collision.gameObject.CompareTag("Chao"))
         {
             estaPulando = false;
-            animator.SetBool("EstaNoChao", true);
+            anima.NoChao();
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
         podePegar = true;
-        ListarAvisos("Pressione E");
+        podeAtacar = true;
     }
 
     private void OnTriggerStay(Collider other)
@@ -164,19 +170,25 @@ public class Player : MonoBehaviour
             pegando = false;
         }
         
-        if(other.gameObject.CompareTag("Porta") && pegando && temChave)
+        if(other.gameObject.CompareTag("Porta") && pegando && !other.gameObject.GetComponent<Porta>().Aberto())
         {
-            other.gameObject.GetComponent<Animator>().SetTrigger("Abrir");
+            Porta porta = other.gameObject.GetComponent<Porta>();
+            if (VerificaChave(porta.PegarNumeroFechadura()))
+            {
+                other.gameObject.GetComponent<Porta>().AbrirPorta();
+                DescartarChaveUtilizada(porta.PegarNumeroFechadura());
+            }
         }
 
-        if (other.gameObject.CompareTag("Bau") && pegando)
+        if (other.gameObject.CompareTag("Bau") && pegando && !other.gameObject.GetComponent<Bau>().Aberto())
         {
-            if(VerificaChave(other.gameObject.GetComponent<Bau>().PegarNumeroFechadura()))
+            Bau bau = other.gameObject.GetComponent<Bau>();
+            if (VerificaChave(bau.PegarNumeroFechadura()))
             {
-                other.gameObject.GetComponent<Animator>().SetTrigger("Abrir");
                 PegarConteudoBau(other.gameObject);
                 podePegar = false;
                 pegando = false;
+                DescartarChaveUtilizada(bau.PegarNumeroFechadura());
             }
         }
     }
@@ -185,21 +197,29 @@ public class Player : MonoBehaviour
     {
         pegando = false;
         podePegar = false;
+        podeAtacar = false;
     }
 
     private bool VerificaChave(int chave)
     {
         foreach (Item item in inventario.Itens)
         {
-            if (item is Chave chaveNumero)
+            if(item is Chave chaveNumero)
             {
-                if (chaveNumero.PegarNumeroChave() == chave)
+                int numero = chaveNumero.PegarNumeroChave();
+                
+                if (numero == chave)
                 {
                     return true;
                 }
             }
+            else
+            {
+                avisos.ListarAvisos("Chave não encontrada!");
+            }
         }
 
+        
         return false;
     }
 
@@ -207,51 +227,31 @@ public class Player : MonoBehaviour
     {
         Bau bauTesouro = bau.GetComponent<Bau>();
 
-        ListarAvisos($"+{ouro += bauTesouro.PegarOuro()} de ouro");
+        avisos.ListarAvisos($"+{ouro += bauTesouro.PegarOuro()} de ouro");
 
         bauTesouro.AcessarConteudoBau();
         
-        ListarAvisos("Novos itens!");
-        
+        avisos.ListarAvisos("Novos itens!");
+    }
+
+    private void DescartarChaveUtilizada(int numChave)
+    {
         foreach (Item item in inventario.Itens)
         {
             if (item is Chave chave) //Cast
             {
                 if (chave.PegarNumeroChave() 
-                    == bauTesouro.PegarNumeroFechadura())
+                    == numChave)
                 {
                     inventario.RemoveItem(item);
                     inventario.Itens.Remove(item);
-                    ListarAvisos("Chave Utilizada!");
+                    avisos.ListarAvisos("Chave Utilizada!");
                 }
             }
         }
     }
+    
 
-
-    private void ListarAvisos(string aviso)
-    {
-        listaAvisos.Add(aviso);
-        StopAllCoroutines();
-        StartCoroutine("MostrarAviso");    
-        
-    }
-
-    IEnumerator MostrarAviso()
-    {
-        
-        foreach (string texto in listaAvisos)
-        {
-            avisos.text = texto;
-            GameObject.Find("Avisos").GetComponent<Animator>().SetTrigger("Aviso");
-            yield return new WaitForSeconds(2.5f);
-            GameObject.Find("Avisos").GetComponent<Animator>().SetTrigger("Aviso");
-            yield return new WaitForSeconds(0.5f);
-        }   
-
-        listaAvisos.Clear();
-        //StopCoroutine("MostrarAviso");
-
-    }
+    
 
 }
